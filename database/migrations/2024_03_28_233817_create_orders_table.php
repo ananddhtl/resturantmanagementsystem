@@ -18,6 +18,8 @@ return new class extends Migration
             $table->decimal('discount', 20, 2)->default(0);
             $table->decimal('grand_total', 20, 2)->default(0);
 
+            $table->string('order_type')->nullable();
+
             $table->string('status')->nullable()->default('Pending');
             $table->timestamps();
         });

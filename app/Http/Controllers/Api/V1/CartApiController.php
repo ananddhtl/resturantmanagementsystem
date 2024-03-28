@@ -16,7 +16,7 @@ class CartApiController extends BaseApiController
     public function getCart()
     {
         try {
-            $carts = Cart::where('user_id', auth('api')->user()->id)->with('items')->withCount('items')->get();
+            $carts = Cart::where('user_id', 1)->with('items')->withCount('items')->get();
 
             return $this->sendResponse($carts, "User's Cart.");
         } catch (Exception $e) {
@@ -31,11 +31,11 @@ class CartApiController extends BaseApiController
             $product = Product::where('id', $request->product_id)->first();
 
             if ($product) {
-                $existing_cart = Cart::where('user_id', auth('api')->user()->id)->first();
+                $existing_cart = Cart::where('user_id', 1)->first();
 
                 if (!$existing_cart) {
                     $cart = Cart::create([
-                        'user_id' => auth('api')->user()->id,
+                        'user_id' => 1,
                         'cart_total' => 0,
                     ]);
                 } else {
@@ -56,7 +56,7 @@ class CartApiController extends BaseApiController
 
                 DB::commit();
 
-                return response()->json(['status' => true, 'message' => 'Product added to cart']);
+                return $this->sendResponse([], 'Product added to cart');
             }
         } catch (Exception $e) {
             DB::rollBack();

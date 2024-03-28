@@ -47,7 +47,7 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::get('tables', TableApiController::class)->middleware('auth:sanctum');
     Route::post('tables/reservation', [TableApiController::class, 'tableReservation']);
 
-    Route::middleware('api')->group(function () {
+    // Route::middleware('api')->group(function () {
         //cart
         Route::get('cart', [CartApiController::class, 'getCart']);
         Route::post('add-to-cart', [CartApiController::class, 'addToCart']);
@@ -58,5 +58,5 @@ Route::prefix('v1')->name('api.')->group(function () {
         Route::post('checkout', [OrderApiController::class, 'checkout']);
         Route::get('orders', [OrderApiController::class, 'getOrders']);
         Route::get('order-details', [OrderApiController::class, 'getOrderById']);
-    });
+    // });
 });
