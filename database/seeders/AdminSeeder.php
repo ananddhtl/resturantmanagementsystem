@@ -12,7 +12,7 @@ class AdminSeeder extends Seeder
     {
         User::query()->create([
             'name' => 'Srijana Sharma',
-            'email' => 'srijanasharma@gmail.com',
+            'email' => 'admin@gmail.com',
             'password' => '12345678',
             'role' => 'Admin',
             'email_verified_at' => now()
