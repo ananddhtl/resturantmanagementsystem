@@ -10,13 +10,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('api.')->group(function () {
     Route::prefix('auth')->name('auth.')->group(function () {
-        Route::post('login', [AuthController::class, 'login'])->name('login');
-        Route::post('register', [AuthController::class, 'register'])->name('register');
+
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('verify-otp', [AuthController::class, 'verifyOTP']);
+            Route::post('logout', [AuthController::class, 'logout']);
+            Route::get('user-profile', [AuthController::class, 'user']);
+            Route::post('change-password', [AuthController::class, 'changePassword']);
+        });
+        Route::post('login', [AuthController::class, 'login']);
+        Route::post('register', [AuthController::class, 'register']);
+        Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+        Route::post('reset-password', [AuthController::class, 'resetPassword']);
+
         Route::post('send-password-reset-token', [AuthController::class, 'sendPasswordResetToken'])->name('sendPasswordResetToken');
         Route::post('verify-password-reset-token', [AuthController::class, 'verifyPasswordResetToken'])->name('verifyPasswordResetToken');
-        Route::post('change-password', [AuthController::class, 'changePassword'])->name('changePassword');
-        Route::post('logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth:sanctum');
-        Route::get('user', [AuthController::class, 'user'])->name('user')->middleware('auth:sanctum');
+
     });
 
     Route::get('products', ProductController::class)->middleware('auth:sanctum');

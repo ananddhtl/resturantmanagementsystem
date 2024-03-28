@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('password');
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
+            $table->string('otp')->nullable();
+            $table->string('otp_sent_at')->nullable();
+            $table->date('otp_verified_at')->nullable();
             $table->foreignId('image_id')->nullable();
             $table->foreign('image_id')->references('id')->on('files')->onDelete('cascade');
             $table->enum('role', ['admin', 'waiter', 'chef', 'user'])->default('user');

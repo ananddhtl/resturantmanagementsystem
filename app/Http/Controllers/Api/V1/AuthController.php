@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Jobs\SendPasswordResetTokenMailJob;
 use App\Models\PasswordResetToken;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +23,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
         }
 
         $credentials = [
@@ -30,16 +32,22 @@ class AuthController extends Controller
         ];
 
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+            $user = new UserResource(Auth::user());
+
+
             return response()->json([
-                'user' => $user,
-                'authorization' => [
-                    'token' => $user->createToken('ApiToken')->plainTextToken,
-                    'type' => 'bearer',
+                    'status' => true,
+                    'data' => [
+                        'user' => $user,
+                        'token' => [
+                            'access_token' => $user->createToken('ApiToken')->plainTextToken,
+                            'token_type' => 'bearer'
+                        ]
+                    ]
                 ]
-            ]);
+            );
         } else {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json(['status' => false, 'message' => 'Invalid credentials'], 401);
         }
     }
 
@@ -55,7 +63,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json(['status' => false, 'message' => $validator->errors()->first()], 422);
         }
 
         $user = User::create([
@@ -64,10 +72,18 @@ class AuthController extends Controller
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ]);
+        $user = new UserResource($user);
+
 
         return response()->json([
-            'message' => 'User created successfully',
-            'user' => $user
+            'status' => true, 'message' => 'User created successfully',
+            'data' => [
+                'user' => $user,
+                'token' => [
+                    'access_token' => $user->createToken('ApiToken')->plainTextToken,
+                    'token_type' => 'bearer'
+                ]
+            ]
         ], 201);
     }
 
@@ -76,16 +92,42 @@ class AuthController extends Controller
         Auth::user()->tokens()->delete();
 
         return response()->json([
-            'message' => 'Successfully logged out',
+            'status' => true, 'message' => 'Successfully logged out',
         ]);
     }
 
     public function user(Request $request)
     {
         return response()->json([
-            'message' => '',
-            'user' => Auth::user()
+            'status' => true,
+            'data' => new UserResource(\auth()->user())
         ]);
+    }
+
+    public function verifyOTP(Request $request)
+    {
+        try {
+            $user = auth()->user();
+
+            if ($user->otp == $request->get('otp')) {
+                $user->otp_verified_at = Carbon::now();
+                $user->save();
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Successfully verified!'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid code! Failed to verify'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     public function sendPasswordResetToken(Request $request)
@@ -117,7 +159,7 @@ class AuthController extends Controller
             PasswordResetToken::query()->create($data);
         }
 
-        return response()->json(['message' => 'Send Successfully!'], 200);
+        return response()->json(['status' => true, 'message' => 'Send Successfully!'], 200);
     }
 
     public function verifyPasswordResetToken(Request $request)
@@ -134,24 +176,109 @@ class AuthController extends Controller
 
         $user = $token->user;
 
-        return response()->json(['message' => 'Validated successfully', 'user' => $user], 200);
+        return response()->json(['status' => true, 'message' => 'Validated successfully', 'user' => $user], 200);
     }
 
     public function changePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required|min:8|max:30|confirmed',
+            'old_password' => 'required|min:8|max:30',
+            'new_password' => 'required|min:8|max:30',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
+        try {
+            $user = auth()->user();
 
-        $user = User::query()->where('email', '=', $request->email)->first();
-        $user->password = Hash::make($request->password);
-        $user->update();
+            if (!(Hash::check($request->get('old_password'), $user->getAuthPassword()))) {
+                return response()->json(['status' => false, 'message' => 'Your current password does not match with the password you provided. Please try again.']);
+            }
 
-        return response()->json(['message' => 'Password updated successfully.'], 200);
+            $user->password = Hash::make($request->new_password);
+            $user->update();
+
+            return response()->json([
+                'status' => true,
+                'data' => $user,
+                'message' => 'Password updated successfully.'
+            ], 200);
+        } catch (\Exception $ex) {
+            return response()->json(['status' => false, 'message' => $ex->getMessage()]);
+        }
     }
+
+    public function forgotPassword(Request $request)
+    {
+        $validate = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json(['status' => false, 'message' => $validate->errors()->first()], 422);
+        }
+
+        try {
+            $user = User::where('email', $validate->validated()['email'])->first();
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'The email is not found',
+                ], 401);
+            } else {
+                $userId = $user->id;
+                $verificationCode = 12345;
+                $user->otp = $verificationCode;
+                $user->save();
+
+                //TODO: send verification code to iser
+                return response()->json([
+                    'status' => true,
+                    'user_id' => $userId
+                ], 200);
+
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage(),
+            ], 401);
+        }
+
+
+    }
+
+    public function resetPassword(Request $request)
+    {
+        try {
+            $validate = $request->validate([
+                'otp' => 'required',
+                'user_id' => 'required',
+                'new_password' => 'required',
+            ]);
+            $user = User::where('id', $validate['user_id'])->where('otp', $validate['otp'])->first();
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid OTP',
+                ], 401);
+            } else {
+                $updateCustomer = $user;
+                $updateCustomer->password = bcrypt($request->new_password);
+                $updateCustomer->update();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Password Reset Successfully.'
+                ], 201);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
 }

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('register', [AuthController::class, 'showRegisterPage'])->middleware(['guest', 'checkAdminRegistration'])->name('show.register');
     Route::post('register', [AuthController::class, 'register'])->middleware(['guest', 'checkAdminRegistration'])->name('register');
-    Route::get('login', [AuthController::class, 'showLoginPage'])->middleware('guest')->name('show.login');
+    Route::get('/login', [AuthController::class, 'showLoginPage'])->middleware('guest')->name('show.login');
     Route::post('login', [AuthController::class, 'login'])->middleware('guest')->name('login');
     Route::post('logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 });
