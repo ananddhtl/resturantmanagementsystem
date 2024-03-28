@@ -13,6 +13,17 @@ use Illuminate\Support\Facades\DB;
 
 class CartApiController extends BaseApiController
 {
+    public function getCart()
+    {
+        try {
+            $carts = Cart::where('user_id', auth('api')->user()->id)->with('items')->withCount('items')->get();
+
+            return $this->sendResponse($carts, "User's Cart.");
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong');
+        }
+    }
+
     public function addToCart(Request $request)
     {
         try {
