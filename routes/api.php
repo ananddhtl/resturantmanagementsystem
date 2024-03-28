@@ -32,14 +32,17 @@ Route::prefix('v1')->name('api.')->group(function () {
     });
 
     Route::get('products', ProductApiController::class)->middleware('auth:sanctum');
-    Route::get('tables', TableApiController::class)->middleware('auth:sanctum');
     Route::post('product/{id}/order', OrderController::class)->middleware('auth:sanctum');
     Route::post('order/{id}/payment', PaymentController::class)->middleware('auth:sanctum');
-
+    
     //category
     Route::get('product-categories', ProductCategoryApiController::class)->middleware('auth:sanctum');
     Route::get('products-by-category', [ProductCategoryApiController::class, 'productsByCategory']);
-
+    
     //menu
     Route::get('/menu', [MenuApiController::class, 'getMenu']);
+    
+    // table
+    Route::get('tables', TableApiController::class)->middleware('auth:sanctum');
+    Route::post('tables/reservation', [TableApiController::class, 'tableReservation']);
 });
