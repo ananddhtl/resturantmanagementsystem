@@ -19,19 +19,19 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register', [AuthApiController::class, 'signup']);
         Route::post('login', [AuthApiController::class, 'login']);
-    
+
         Route::middleware('api')->group(function () {
             Route::post('logout', [AuthApiController::class, 'logout']);
-    
+
             Route::post('change-password', [AuthApiController::class, 'changePassword']);
-    
+
             Route::post('verify-otp', [AuthApiController::class, 'forgotOTPVerify']);
             Route::post('reset-password', [AuthApiController::class, 'resetPassword']);
         });
-    
+
         Route::post('forgot-password', [AuthApiController::class, 'forgotPassword']);
     });
-    
+
     // Route::prefix('auth')->name('auth.')->group(function () {
 
     //     Route::middleware('auth:sanctum')->group(function () {
@@ -49,31 +49,31 @@ Route::prefix('v1')->name('api.')->group(function () {
     //     Route::post('verify-password-reset-token', [AuthController::class, 'verifyPasswordResetToken'])->name('verifyPasswordResetToken');
     // });
 
-    Route::get('products', ProductApiController::class)->middleware('auth:sanctum');
-    Route::post('product/{id}/order', OrderController::class)->middleware('auth:sanctum');
-    Route::post('order/{id}/payment', PaymentController::class)->middleware('auth:sanctum');
+    Route::get('products', ProductApiController::class);
+    Route::post('product/{id}/order', OrderController::class);
+    Route::post('order/{id}/payment', PaymentController::class);
 
     //category
-    Route::get('product-categories', ProductCategoryApiController::class)->middleware('auth:sanctum');
+    Route::get('product-categories', ProductCategoryApiController::class);
     Route::get('products-by-category', [ProductCategoryApiController::class, 'productsByCategory']);
 
     //menu
     Route::get('/menu', [MenuApiController::class, 'getMenu']);
 
     // table
-    Route::get('tables', TableApiController::class)->middleware('auth:sanctum');
+    Route::get('tables', TableApiController::class);
     Route::post('tables/reservation', [TableApiController::class, 'tableReservation']);
 
     // Route::middleware('api')->group(function () {
-        //cart
-        Route::get('cart', [CartApiController::class, 'getCart']);
-        Route::post('add-to-cart', [CartApiController::class, 'addToCart']);
-        Route::post('update-cart-item', [CartApiController::class, 'updateCartItem']);
-        Route::post('delete-cart-item', [CartApiController::class, 'deleteCartItem']);
+    //cart
+    Route::get('cart', [CartApiController::class, 'getCart']);
+    Route::post('add-to-cart', [CartApiController::class, 'addToCart']);
+    Route::post('update-cart-item', [CartApiController::class, 'updateCartItem']);
+    Route::post('delete-cart-item', [CartApiController::class, 'deleteCartItem']);
 
-        //order
-        Route::post('checkout', [OrderApiController::class, 'checkout']);
-        Route::get('orders', [OrderApiController::class, 'getOrders']);
-        Route::get('order-details', [OrderApiController::class, 'getOrderById']);
+    //order
+    Route::post('checkout', [OrderApiController::class, 'checkout']);
+    Route::get('orders', [OrderApiController::class, 'getOrders']);
+    Route::get('order-details', [OrderApiController::class, 'getOrderById']);
     // });
 });

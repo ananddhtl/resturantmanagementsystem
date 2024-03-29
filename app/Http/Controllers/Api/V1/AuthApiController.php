@@ -36,7 +36,6 @@ class AuthApiController extends BaseApiController
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'],
-                'status' => 'active',
                 'password' => bcrypt($validated['password']),
             ]);
 
@@ -61,6 +60,7 @@ class AuthApiController extends BaseApiController
             return $this->sendResponse(['token' => $token], "Your account has been created");
         } catch (Exception $e) {
             DB::rollBack();
+            dd($e->getMessage());
             return $this->sendError("Server Error. Please try again later.");
         }
     }
@@ -74,10 +74,6 @@ class AuthApiController extends BaseApiController
 
             if (!$user) {
                 return $this->sendError('The email is not found');
-            }
-
-            if ($user->status != 'active') {
-                return $this->sendError('We\'re sorry your account has been disabled by the administrator. Please contact our support team for further assistance!');
             }
 
             if (!Hash::check($request->password, $user->password)) {
@@ -140,7 +136,8 @@ class AuthApiController extends BaseApiController
             return $this->sendResponse([
                 'user' => $user,
             ], "Password updated successfully");
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            dd($e->getMessage());
             return $this->sendError("Server Error. Please try again later.");
         }
     }
@@ -175,12 +172,13 @@ class AuthApiController extends BaseApiController
             $user->temp_token = $temp_token;
             $user->save();
 
-            // Mail::to($user->email)->send(new \App\Mail\SendOTP($user));
+            Mail::to($user->email)->send(new \App\Mail\SendOTP($user));
 
             return $this->sendResponse([
                 'temp_token' => $temp_token,
             ], "OTP has been sent to your email");
         } catch (Exception $e) {
+            dd($e->getMessage());
             return $this->sendError("Server Error. Please try again later.");
         }
     }

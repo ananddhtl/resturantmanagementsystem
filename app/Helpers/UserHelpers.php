@@ -27,7 +27,6 @@ class UserHelpers
     public static function createUser(array $data): User
     {
         $user = User::create($data);
-        $user->assignRole('Customer');
 
         return self::findOrfail($user->id);
     }
