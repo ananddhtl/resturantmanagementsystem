@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AuthApiController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CartApiController;
 use App\Http\Controllers\Api\V1\MenuApiController;
@@ -15,22 +16,38 @@ use App\Http\Controllers\Api\V1\TableController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('api.')->group(function () {
-    Route::prefix('auth')->name('auth.')->group(function () {
-
-        Route::middleware('auth:sanctum')->group(function () {
-            Route::post('verify-otp', [AuthController::class, 'verifyOTP']);
-            Route::post('logout', [AuthController::class, 'logout']);
-            Route::get('user-profile', [AuthController::class, 'user']);
-            Route::post('change-password', [AuthController::class, 'changePassword']);
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('register', [AuthApiController::class, 'signup']);
+        Route::post('login', [AuthApiController::class, 'login']);
+    
+        Route::middleware('api')->group(function () {
+            Route::post('logout', [AuthApiController::class, 'logout']);
+    
+            Route::post('change-password', [AuthApiController::class, 'changePassword']);
+    
+            Route::post('verify-otp', [AuthApiController::class, 'forgotOTPVerify']);
+            Route::post('reset-password', [AuthApiController::class, 'resetPassword']);
         });
-        Route::post('login', [AuthController::class, 'login']);
-        Route::post('register', [AuthController::class, 'register']);
-        Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
-        Route::post('reset-password', [AuthController::class, 'resetPassword']);
-
-        Route::post('send-password-reset-token', [AuthController::class, 'sendPasswordResetToken'])->name('sendPasswordResetToken');
-        Route::post('verify-password-reset-token', [AuthController::class, 'verifyPasswordResetToken'])->name('verifyPasswordResetToken');
+    
+        Route::post('forgot-password', [AuthApiController::class, 'forgotPassword']);
     });
+    
+    // Route::prefix('auth')->name('auth.')->group(function () {
+
+    //     Route::middleware('auth:sanctum')->group(function () {
+    //         Route::post('verify-otp', [AuthController::class, 'verifyOTP']);
+    //         Route::post('logout', [AuthController::class, 'logout']);
+    //         Route::get('user-profile', [AuthController::class, 'user']);
+    //         Route::post('change-password', [AuthController::class, 'changePassword']);
+    //     });
+    //     Route::post('login', [AuthController::class, 'login']);
+    //     Route::post('register', [AuthController::class, 'register']);
+    //     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+    //     Route::post('reset-password', [AuthController::class, 'resetPassword']);
+
+    //     Route::post('send-password-reset-token', [AuthController::class, 'sendPasswordResetToken'])->name('sendPasswordResetToken');
+    //     Route::post('verify-password-reset-token', [AuthController::class, 'verifyPasswordResetToken'])->name('verifyPasswordResetToken');
+    // });
 
     Route::get('products', ProductApiController::class)->middleware('auth:sanctum');
     Route::post('product/{id}/order', OrderController::class)->middleware('auth:sanctum');
