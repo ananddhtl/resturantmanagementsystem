@@ -27,13 +27,12 @@ class ProductCategoryApiController extends BaseApiController
     public function productsByCategory(Request $request)
     {
         try {
-            $category = ProductCategory::findOrFail($request->id);
+            $category = ProductCategory::where('id', $request->id)->with('image')->first();
 
-            $products = $category->products;
+            $products = $category->products()->with('image')->with('category')->with('category.image')->latest()->get();
 
             return $this->sendResponse($products, 'Products By Category');
         } catch (Exception $e) {
-            dd($e->getMessage());
             return $this->sendError('Something went wrong');
         }
     }

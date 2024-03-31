@@ -25,8 +25,19 @@ class ProductApiController extends BaseApiController
                     });
                 }
             }
-            $products = $products->get();
+            $products = $products->latest()->get();
             return $this->sendResponse($products, 'All Product List');
+        } catch (Exception $e) {
+            return $this->sendError('Something went wrong');
+        }
+    }
+
+    public function getProductById(Request $request)
+    {
+        try {
+            $product = Product::query()->where('id', $request->id)->with('image')->with('category')->with('category.image')->first();
+
+            return $this->sendResponse($product, 'All Product List');
         } catch (Exception $e) {
             return $this->sendError('Something went wrong');
         }

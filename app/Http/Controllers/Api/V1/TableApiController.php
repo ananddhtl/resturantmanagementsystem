@@ -39,6 +39,9 @@ class TableApiController extends BaseApiController
             ]);
             $table_reservation->save();
 
+            $table->status = true;
+            $table->save();
+
             DB::commit();
             return $this->sendResponse($table_reservation, 'Reserved Successfully.');
         } catch (Exception $e) {

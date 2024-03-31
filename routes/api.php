@@ -50,6 +50,8 @@ Route::prefix('v1')->name('api.')->group(function () {
     // });
 
     Route::get('products', ProductApiController::class);
+    Route::get('products-by-id', [ProductApiController::class, 'getProductById']);
+
     Route::post('product/{id}/order', OrderController::class);
     Route::post('order/{id}/payment', PaymentController::class);
 
