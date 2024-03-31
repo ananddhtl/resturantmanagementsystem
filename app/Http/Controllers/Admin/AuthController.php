@@ -32,7 +32,7 @@ class AuthController extends Controller
             return redirect()->back()->with('loginError', 'The email or password field is invalid.');
         }
 
-        return redirect('/');
+        return redirect('/admin');
     }
 
     public function register(RegisterRequest $request)
