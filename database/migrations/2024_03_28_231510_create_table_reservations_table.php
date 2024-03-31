@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('date');
             $table->time('time');
             $table->integer('guest_count');
+            $table->boolean('is_complete')->default(0);
             $table->timestamps();
         });
     }

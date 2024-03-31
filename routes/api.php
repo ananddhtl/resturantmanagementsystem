@@ -65,6 +65,7 @@ Route::prefix('v1')->name('api.')->group(function () {
     // table
     Route::get('tables', TableApiController::class);
     Route::post('tables/reservation', [TableApiController::class, 'tableReservation']);
+    Route::post('tables/unreserve', [TableApiController::class, 'unReserveTable']);
 
     // Route::middleware('api')->group(function () {
     //cart

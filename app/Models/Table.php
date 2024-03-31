@@ -10,4 +10,9 @@ class Table extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'status'];
+
+    public function reservation()
+    {
+        return $this->hasOne(TableReservation::class)->where('is_complete', 0);
+    }
 }
