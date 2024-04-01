@@ -28,7 +28,7 @@ class CartApiController extends BaseApiController
     {
         try {
             DB::beginTransaction();
-            $product = Product::where('id', $request->product_id)->first();
+            $product = Product::findOrFail($request->product_id);
 
             if ($product) {
                 $existing_cart = Cart::where('user_id', 1)->first();
@@ -60,7 +60,7 @@ class CartApiController extends BaseApiController
             }
         } catch (Exception $e) {
             DB::rollBack();
-            return $this->sendError('Something went wrong');
+            return $this->sendError($e->getMessage());
         }
     }
 
@@ -90,7 +90,7 @@ class CartApiController extends BaseApiController
             return $this->sendResponse($item, 'Cart Item Updated successfully');
         } catch (Exception $e) {
             DB::rollBack();
-            return $this->sendError('Something went wrong');
+            return $this->sendError($e->getMessage());
         }
     }
 
@@ -110,7 +110,7 @@ class CartApiController extends BaseApiController
 
             return $this->sendResponse([], 'Cart Item Deleted successfully');
         } catch (Exception $e) {
-            return $this->sendError('Something went wrong');
+            return $this->sendError($e->getMessage());
         }
     }
 }
