@@ -65,7 +65,7 @@ class OrderApiController extends BaseApiController
     public function getOrders()
     {
         try {
-            $orders = Order::where('user_id', auth('api')->user()->id)->with('items', 'items.product', 'items.product.image')->get();
+            $orders = Order::where('user_id', auth('api')->user()->id)->with('items', 'items.product', 'items.product.image')->latest()->get();
 
             return $this->sendResponse($orders, "User's all orders");
         } catch (Exception $e) {

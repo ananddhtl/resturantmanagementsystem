@@ -24,12 +24,11 @@ Route::prefix('v1')->name('api.')->group(function () {
             Route::post('logout', [AuthApiController::class, 'logout']);
 
             Route::post('change-password', [AuthApiController::class, 'changePassword']);
-
-            Route::post('verify-otp', [AuthApiController::class, 'forgotOTPVerify']);
-            Route::post('reset-password', [AuthApiController::class, 'resetPassword']);
         });
-
+        
         Route::post('forgot-password', [AuthApiController::class, 'forgotPassword']);
+        Route::post('verify-otp', [AuthApiController::class, 'forgotOTPVerify']);
+        Route::post('reset-password', [AuthApiController::class, 'resetPassword']);
     });
 
     // Route::prefix('auth')->name('auth.')->group(function () {
