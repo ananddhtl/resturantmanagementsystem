@@ -16,7 +16,7 @@ class CartApiController extends BaseApiController
     public function getCart()
     {
         try {
-            $carts = Cart::where('user_id', 1)->with('items', 'items.product')->withCount('items')->get();
+            $carts = Cart::where('user_id', 1)->with('items', 'items.product', 'items.product.image')->withCount('items')->get();
 
             return $this->sendResponse($carts, "User's Cart.");
         } catch (Exception $e) {
