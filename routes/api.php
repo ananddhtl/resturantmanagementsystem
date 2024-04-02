@@ -20,7 +20,7 @@ Route::prefix('v1')->name('api.')->group(function () {
         Route::post('register', [AuthApiController::class, 'signup']);
         Route::post('login', [AuthApiController::class, 'login']);
 
-        Route::middleware('api')->group(function () {
+        Route::middleware('auth:api')->group(function () {
             Route::post('logout', [AuthApiController::class, 'logout']);
 
             Route::post('change-password', [AuthApiController::class, 'changePassword']);
@@ -67,16 +67,16 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::post('tables/reservation', [TableApiController::class, 'tableReservation']);
     Route::post('tables/unreserve', [TableApiController::class, 'unReserveTable']);
 
-    // Route::middleware('api')->group(function () {
-    //cart
-    Route::get('cart', [CartApiController::class, 'getCart']);
-    Route::post('add-to-cart', [CartApiController::class, 'addToCart']);
-    Route::post('update-cart-item', [CartApiController::class, 'updateCartItem']);
-    Route::post('delete-cart-item', [CartApiController::class, 'deleteCartItem']);
+    Route::middleware('api')->group(function () {
+        //cart
+        Route::get('cart', [CartApiController::class, 'getCart']);
+        Route::post('add-to-cart', [CartApiController::class, 'addToCart']);
+        Route::post('update-cart-item', [CartApiController::class, 'updateCartItem']);
+        Route::post('delete-cart-item', [CartApiController::class, 'deleteCartItem']);
 
-    //order
-    Route::post('checkout', [OrderApiController::class, 'checkout']);
-    Route::get('orders', [OrderApiController::class, 'getOrders']);
-    Route::get('order-details', [OrderApiController::class, 'getOrderById']);
-    // });
+        //order
+        Route::post('checkout', [OrderApiController::class, 'checkout']);
+        Route::get('orders', [OrderApiController::class, 'getOrders']);
+        Route::get('order-details', [OrderApiController::class, 'getOrderById']);
+    });
 });

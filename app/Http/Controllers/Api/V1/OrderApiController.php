@@ -31,7 +31,7 @@ class OrderApiController extends BaseApiController
             $grandTotal = $salesTotal - $discount;
 
             $order = Order::create([
-                'user_id' => "1",
+                'user_id' => auth('api')->user()->id,
                 'order_type' => $request->order_type,
                 'sales_total' => $salesTotal,
                 'discount' => $discount,
@@ -65,7 +65,7 @@ class OrderApiController extends BaseApiController
     public function getOrders()
     {
         try {
-            $orders = Order::where('user_id', auth('api')->user()->id)->with('items')->get();
+            $orders = Order::where('user_id', auth('api')->user()->id)->with('items', 'items.product', 'items.product.image')->get();
 
             return $this->sendResponse($orders, "User's all orders");
         } catch (Exception $e) {
@@ -76,7 +76,7 @@ class OrderApiController extends BaseApiController
     public function getOrderById(Request $request)
     {
         try {
-            $order = Order::where('id', $request->id)->with('items')->first();
+            $order = Order::where('id', $request->id)->with('items', 'items.product', 'items.product.image')->first();
             if ($order) {
                 return $this->sendResponse($order, 'Order Details');
             } else {

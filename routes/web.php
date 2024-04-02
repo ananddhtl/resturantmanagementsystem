@@ -9,6 +9,10 @@ use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/', function () {
+    return redirect()->route('auth.show.login');
+});
+
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::get('register', [AuthController::class, 'showRegisterPage'])->middleware(['guest', 'checkAdminRegistration'])->name('show.register');
     Route::post('register', [AuthController::class, 'register'])->middleware(['guest', 'checkAdminRegistration'])->name('register');
