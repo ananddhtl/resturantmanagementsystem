@@ -57,7 +57,7 @@ class AuthApiController extends BaseApiController
 
             DB::commit();
 
-            return $this->sendResponse(['token' => $token], "Your account has been created");
+            return $this->sendResponse(['user' => $createdUser, 'token' => $token], "Your account has been created");
         } catch (Exception $e) {
             DB::rollBack();
             dd($e->getMessage());
