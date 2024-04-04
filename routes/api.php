@@ -50,6 +50,7 @@ Route::prefix('v1')->name('api.')->group(function () {
 
     Route::get('products', ProductApiController::class);
     Route::get('products-by-id', [ProductApiController::class, 'getProductById']);
+    Route::get('search-products', [ProductApiController::class, 'searchProducts']);
 
     Route::post('product/{id}/order', OrderController::class);
     Route::post('order/{id}/payment', PaymentController::class);
@@ -57,7 +58,7 @@ Route::prefix('v1')->name('api.')->group(function () {
     //category
     Route::get('product-categories', ProductCategoryApiController::class);
     Route::get('products-by-category', [ProductCategoryApiController::class, 'productsByCategory']);
-
+    
     //menu
     Route::get('/menu', [MenuApiController::class, 'getMenu']);
 
@@ -65,6 +66,7 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::get('tables', TableApiController::class);
     Route::post('tables/reservation', [TableApiController::class, 'tableReservation']);
     Route::post('tables/unreserve', [TableApiController::class, 'unReserveTable']);
+    Route::get('tables/available', [TableApiController::class, 'getAvailableTable']);
 
     Route::middleware('api')->group(function () {
         //cart

@@ -71,4 +71,16 @@ class TableApiController extends BaseApiController
             return $this->sendError('Something went wrong');
         }
     }
+
+    public function getAvailableTable()
+    {
+        try {
+            $tables = Table::where('status', 0)->with('reservation')->get();
+
+            return $this->sendResponse($tables, 'All table list');
+        } catch (Exception $e) {
+
+            return $this->sendError('Something went wrong');
+        }
+    }
 }

@@ -42,4 +42,15 @@ class ProductApiController extends BaseApiController
             return $this->sendError('Something went wrong');
         }
     }
+
+    public function searchProducts(Request $request)
+    {
+        try{
+            $products = Product::where('name', 'like', '%' . $request->search_term . '%')->with('image')->with('category')->with('category.image')->get();
+
+            return $this->sendResponse($products, 'Searched Product List');
+        }catch(Exception $e){
+            return $this->sendError('Something went wrong');
+        }
+    }
 }
