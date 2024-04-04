@@ -6,7 +6,7 @@ class  VerificationHelpers
 {
     static function generateVerificationCode()
     {
-        if (config('constant.app_env') === "local")
+        if (env('APP_ENV') === "local")
             return 12345;
         else return rand(10000, 99999);
     }
