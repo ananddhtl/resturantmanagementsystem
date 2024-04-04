@@ -20,7 +20,7 @@ class OrderApiController extends BaseApiController
         try {
             DB::beginTransaction();
 
-            $cart = Cart::findOrFail($request->id);
+            $cart = Cart::findOrFail($request->cart_id);
 
             if (!$cart || $cart->cart_total <= 0) {
                 return $this->sendError('Cart is empty or invalid');
@@ -33,6 +33,7 @@ class OrderApiController extends BaseApiController
             $order = Order::create([
                 'user_id' => auth('api')->user()->id,
                 'table_id' => $cart->table_id,
+                'reference_id' => $request->reference_id,
                 'order_type' => $request->order_type,
                 'sales_total' => $salesTotal,
                 'discount' => $discount,

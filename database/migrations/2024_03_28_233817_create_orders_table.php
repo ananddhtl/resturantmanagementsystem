@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('table_id')->nullable()->constrained('tables')->onDelete('set null');
+            $table->string('reference_id')->nullable();
             $table->decimal('sales_total', 20, 2)->default(0);
             $table->decimal('discount', 20, 2)->default(0);
             $table->decimal('grand_total', 20, 2)->default(0);
