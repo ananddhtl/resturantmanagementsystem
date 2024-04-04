@@ -96,7 +96,7 @@ class AuthApiController extends BaseApiController
 
             $message = 'Login successful';
 
-            return $this->sendResponse(['token' => $token], $message);
+            return $this->sendResponse(['user' => $user, 'token' => $token], $message);
         } catch (Exception $e) {
             return $this->sendError($e->getMessage());
         }
