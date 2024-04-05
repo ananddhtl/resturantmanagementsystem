@@ -16,7 +16,7 @@
                 <table class="table table-striped table-hover table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Name</th>
                             <th scope="col">Email</th>
                             <th scope="col">Address</th>

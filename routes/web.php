@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FileController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\TableController;
@@ -28,4 +29,5 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('categories', ProductCategoryController::class);
     Route::resource('products', ProductController::class);
     Route::resource('tables', TableController::class);
+    Route::resource('orders', OrderController::class);
 });

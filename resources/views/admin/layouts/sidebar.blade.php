@@ -11,7 +11,7 @@
 
     <div class="menu-inner-shadow"></div>
 
-    <ul class="menu-inner py-1">
+    <ul class="menu-inner">
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Analytics</span>
         </li>
@@ -66,6 +66,15 @@
             <a href="{{ route('admin.tables.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
                 <div>Manage Tables</div>
+            </a>
+        </li>
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Orders</span>
+        </li>
+        <li class="menu-item {{ request()->is('admin/orders*') ? 'active' : '' }}">
+            <a href="{{ route('admin.orders.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-shopping-bag"></i>
+                <div>All Orders</div>
             </a>
         </li>
     </ul>
