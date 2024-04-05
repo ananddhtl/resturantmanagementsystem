@@ -32,7 +32,7 @@ class OrderApiController extends BaseApiController
 
             $order = Order::create([
                 'user_id' => auth('api')->user()->id,
-                'table_id' => $cart->table_id,
+                'table_id' => $request->table_id,
                 'reference_id' => $request->reference_id,
                 'order_type' => $request->order_type,
                 'sales_total' => $salesTotal,
@@ -57,7 +57,10 @@ class OrderApiController extends BaseApiController
             $cart->delete();
 
             DB::commit();
-            return $this->sendResponse([], 'Order placed successfully.');
+
+            $order = $order->fresh(['items', 'table', 'items.product', 'items.product.image']);
+
+            return $this->sendResponse($order, 'Order placed successfully.');
         } catch (Exception $e) {
             DB::rollBack();
             return $this->sendError('Something went wrong');
