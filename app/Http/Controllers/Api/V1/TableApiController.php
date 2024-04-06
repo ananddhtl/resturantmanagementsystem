@@ -57,11 +57,12 @@ class TableApiController extends BaseApiController
 
             $table_reservation = TableReservation::findOrFail($request->table_reservation_id);
             $table_reservation->is_complete = true;
-            $table_reservation->save();
-
+            
             $table = Table::findOrFail($table_reservation->table_id);
             $table->status = false;
             $table->save();
+            
+            $table_reservation->delete();
 
             DB::commit();
             return $this->sendResponse($table_reservation, 'UnReserved Successfully.');
