@@ -19,7 +19,6 @@ class TableApiController extends BaseApiController
 
             return $this->sendResponse($tables, 'All table list');
         } catch (Exception $e) {
-            dd($e->getMessage());
             return $this->sendError('Something went wrong');
         }
     }
@@ -32,7 +31,7 @@ class TableApiController extends BaseApiController
             $table = Table::findOrFail($request->id);
 
             $table_reservation = new TableReservation([
-                'user_id' => 1,
+                'user_id' => auth('api')->user()->id,
                 'table_id' => $table->id,
                 'date' => $request->date,
                 'time' => $request->time,
@@ -78,6 +77,20 @@ class TableApiController extends BaseApiController
             $tables = Table::where('status', 0)->with('reservation')->get();
 
             return $this->sendResponse($tables, 'All table list');
+        } catch (Exception $e) {
+
+            return $this->sendError('Something went wrong');
+        }
+    }
+
+    public function getMyReservedTables()
+    {
+        try {
+            $reserved_tables = auth('api')->user()->tableReservation->where('is_complete', 0);
+
+            $reserved_tables = $reserved_tables->fresh(['user', 'table']);
+
+            return $this->sendResponse($reserved_tables, 'All reserved table list');
         } catch (Exception $e) {
 
             return $this->sendError('Something went wrong');
