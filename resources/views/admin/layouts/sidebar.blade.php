@@ -21,16 +21,7 @@
                 <div data-i18n="Analytics">Dashboard</div>
             </a>
         </li>
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">File Management</span>
-        </li>
-        <li
-            class="menu-item {{ request()->routeIs('admin.files.index') || request()->routeIs('admin.files.create') || request()->routeIs('admin.files.edit') ? 'active' : '' }}">
-            <a href="{{ route('admin.files.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-image"></i>
-                <div>Manage Files</div>
-            </a>
-        </li>
+        
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Authentication</span>
         </li>
@@ -51,11 +42,23 @@
                 <div>Manage Categories</div>
             </a>
         </li>
+
+        
         <li
             class="menu-item {{ request()->routeIs('admin.products.index') || request()->routeIs('admin.products.create') || request()->routeIs('admin.products.edit') ? 'active' : '' }}">
             <a href="{{ route('admin.products.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-coffee"></i>
                 <div>Manage Products</div>
+            </a>
+        </li>
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">File Management</span>
+        </li>
+        <li
+            class="menu-item {{ request()->routeIs('admin.files.index') || request()->routeIs('admin.files.create') || request()->routeIs('admin.files.edit') ? 'active' : '' }}">
+            <a href="{{ route('admin.files.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-image"></i>
+                <div>Manage Files</div>
             </a>
         </li>
         <li class="menu-header small text-uppercase">

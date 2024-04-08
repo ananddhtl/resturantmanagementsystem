@@ -26,7 +26,7 @@
 
     <div class="container login-box">
         <form action="{{ route('auth.login') }}" method="POST">
-            <h3 class="text-center">Login to {{ config('app.name') }}</h3>
+            <h3 class="text-center">Login to Admin Portal</h3>
             <hr>
             @csrf
             <div class="form-group mb-3">
