@@ -15,7 +15,7 @@ use App\Http\Controllers\Api\V1\TableApiController;
 use App\Http\Controllers\Api\V1\TableController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1')->name('api.')->group(function () {
+Route::prefix('rms')->name('api.')->group(function () {
     Route::group(['prefix' => 'auth'], function () {
         Route::post('register', [AuthApiController::class, 'signup']);
         Route::post('login', [AuthApiController::class, 'login']);
